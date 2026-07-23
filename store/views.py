@@ -29,9 +29,11 @@ def _product_list_queryset():
 
 class CategoryListView(ListAPIView):
     serializer_class = CategorySerializer
+    pagination_class = None
 
     def get_queryset(self):
         return Category.objects.prefetch_related('subcategories').all()
+
 
 
 #  GET /api/products/
