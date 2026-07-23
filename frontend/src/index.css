@@ -374,3 +374,430 @@ a {
   font-size: 15px;
   color: #cc0000;
 }
+
+/* ============================================================
+   PDP — Layout
+   ============================================================ */
+.pdp-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  padding: 40px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ============================================================
+   PDP — Gallery (left 55%)
+   ============================================================ */
+.pdp-gallery {
+  flex: 0 0 55%;
+  max-width: 55%;
+}
+
+.pdp-main-image-wrapper {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.pdp-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pdp-thumbnail-strip {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  overflow-x: auto;
+  margin-top: 12px;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
+}
+
+.pdp-thumbnail {
+  flex-shrink: 0;
+  width: 80px;
+  height: 100px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.pdp-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pdp-thumbnail--active {
+  border-color: #111111;
+}
+
+/* ============================================================
+   PDP — Info Panel (right 45%)
+   ============================================================ */
+.pdp-info-panel {
+  flex: 0 0 45%;
+  max-width: 45%;
+  padding: 0 0 0 48px;
+  position: sticky;
+  top: 80px;
+  /* Allow panel to scroll independently if taller than viewport */
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.pdp-info-panel::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================================
+   PDP — Breadcrumb
+   ============================================================ */
+.pdp-breadcrumb {
+  font-size: 12px;
+  color: #888888;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.pdp-breadcrumb-link {
+  cursor: pointer;
+  color: #888888;
+  transition: color 0.15s;
+}
+
+.pdp-breadcrumb-link:hover {
+  color: #111111;
+}
+
+.pdp-breadcrumb-sep {
+  margin: 0 4px;
+  color: #cccccc;
+}
+
+.pdp-breadcrumb-current {
+  color: #444444;
+  /* Clamp long product names in breadcrumb */
+  display: inline-block;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+/* ============================================================
+   PDP — Name & Price
+   ============================================================ */
+.pdp-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #111111;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+
+.pdp-price {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   PDP — Divider
+   ============================================================ */
+.pdp-divider {
+  border-top: 1px solid #eeeeee;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+
+/* ============================================================
+   PDP — Section label
+   ============================================================ */
+.pdp-section {
+  margin-bottom: 0;
+}
+
+.pdp-section-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888888;
+  margin-bottom: 10px;
+}
+
+/* ============================================================
+   PDP — Delivery
+   ============================================================ */
+.pdp-country-select {
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 260px;
+}
+
+.pdp-delivery-info {
+  min-height: 20px;
+}
+
+.pdp-delivery-text {
+  font-size: 13px;
+  color: #333333;
+  line-height: 1.6;
+}
+
+.pdp-delivery-loading {
+  font-size: 13px;
+  color: #888888;
+  font-style: italic;
+}
+
+.pdp-delivery-unavailable {
+  font-size: 13px;
+  color: #cc0000;
+}
+
+/* ============================================================
+   PDP — Size Selector
+   ============================================================ */
+.pdp-size-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.size-btn {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #dddddd;
+  background: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333333;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.size-btn:hover:not(:disabled):not(.size-btn--selected):not(.size-btn--low-selected) {
+  border-color: #111111;
+}
+
+/* Selected — in stock */
+.size-btn--selected {
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+}
+
+/* Low stock — unselected */
+.size-btn--low {
+  border-color: #e6a817;
+  color: #333333;
+}
+
+/* Low stock — selected */
+.size-btn--low-selected {
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+  box-shadow: 0 0 0 2px #e6a817;
+}
+
+/* Out of stock */
+.size-btn--oos {
+  color: #bbbbbb;
+  border-color: #eeeeee;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+/* No variant exists for this size */
+.size-btn--unavailable {
+  color: #cccccc;
+  border-color: #eeeeee;
+  cursor: not-allowed;
+  background: #fafafa;
+}
+
+/* Low stock warning text */
+.pdp-low-stock-text {
+  font-size: 12px;
+  color: #e6a817;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* ============================================================
+   PDP — Add to Cart
+   ============================================================ */
+.pdp-add-to-cart {
+  width: 100%;
+  padding: 14px 0;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  margin-top: 20px;
+}
+
+.pdp-add-to-cart--disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   PDP — Total cost
+   ============================================================ */
+.pdp-total {
+  margin-top: 0;
+}
+
+.pdp-total-amount {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 4px;
+}
+
+.pdp-total-subtext {
+  font-size: 12px;
+  color: #888888;
+}
+
+/* ============================================================
+   PDP — Description
+   ============================================================ */
+.pdp-description {
+  font-size: 14px;
+  color: #555555;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   PDP — Similar Products
+   ============================================================ */
+.pdp-similar-section {
+  padding: 40px 32px;
+  border-top: 1px solid #eeeeee;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.pdp-similar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 20px;
+}
+
+.pdp-similar-strip {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
+}
+
+.pdp-similar-card {
+  flex-shrink: 0;
+  width: 220px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.pdp-similar-card:hover {
+  transform: translateY(-2px);
+}
+
+.pdp-similar-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.pdp-similar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.pdp-similar-card:hover .pdp-similar-image {
+  transform: scale(1.03);
+}
+
+/* ============================================================
+   PDP — Toast
+   ============================================================ */
+.pdp-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: #111111;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 12px 28px;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.pdp-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   PDP — Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  .pdp-container {
+    flex-direction: column;
+    padding: 20px 16px;
+  }
+
+  .pdp-gallery,
+  .pdp-info-panel {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .pdp-info-panel {
+    padding: 24px 0 0 0;
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .pdp-similar-section {
+    padding: 32px 16px;
+  }
+}
