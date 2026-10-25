@@ -5,13 +5,18 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from decimal import Decimal
+from rest_framework.permissions import IsAuthenticated
 
-from .models import Category, DeliveryOption, Product
+
+from .models import Category, DeliveryOption, Product, Cart, CartItem
 from .serializers import (
     CategorySerializer,
     DeliveryOptionSerializer,
     ProductDetailSerializer,
     ProductListSerializer,
+    CartSerializer,
+    CartItemCreateSerializer,
+    CartItemUpdateSerializer
 )
 
 
@@ -189,3 +194,148 @@ class DeliveryView(APIView):
         data['estimated_arrival_date'] = self._format_date(arrival)
 
         return Response(data)
+# ---------------------------------------------------------------------------
+# Cart helper
+# ---------------------------------------------------------------------------
+
+def _get_or_create_cart(user):
+    cart, _ = Cart.objects.get_or_create(user=user)
+    return cart
+
+
+def _delivery_context(user):
+    """
+    Build delivery context for CartSerializer.
+    Uses user's saved country if available, falls back to PK.
+    """
+    delivery = None
+    try:
+        if user.has_country:
+            delivery = DeliveryOption.objects.filter(
+                country_name__iexact=user.country
+            ).first() or DeliveryOption.objects.filter(
+                country_code__iexact=user.country
+            ).first()
+        if not delivery:
+            delivery = DeliveryOption.objects.get(country_code='PK')
+    except DeliveryOption.DoesNotExist:
+        return {}
+
+    arrival = date.today() + timedelta(days=delivery.estimated_days_max)
+    # Reuse weekend shift logic from DeliveryView
+    if arrival.weekday() == 5:
+        arrival = arrival + timedelta(days=2)
+    elif arrival.weekday() == 6:
+        arrival = arrival + timedelta(days=1)
+
+    month_abbrs = [
+        '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ]
+    weekday_names = [
+        'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+        'Friday', 'Saturday', 'Sunday',
+    ]
+    formatted = f'{weekday_names[arrival.weekday()]}, {month_abbrs[arrival.month]} {arrival.day}'
+
+    return {
+        'flat_fee':               delivery.flat_fee,
+        'estimated_arrival_date': formatted,
+        'country_name':           delivery.country_name,
+    }
+
+
+def _cart_response(user, request):
+    cart = _get_or_create_cart(user)
+    cart_qs = Cart.objects.prefetch_related(
+        'items__product__images',
+        'items__product__variants',
+        'items__product__category',
+        'items__product__subcategory',
+        'items__variant',
+    ).get(pk=cart.pk)
+    delivery = _delivery_context(user)
+    serializer = CartSerializer(
+        cart_qs,
+        context={'request': request, 'delivery': delivery},
+    )
+    return Response(serializer.data)
+
+
+# ---------------------------------------------------------------------------
+# GET /api/cart/
+# ---------------------------------------------------------------------------
+
+class CartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return _cart_response(request.user, request)
+
+
+# ---------------------------------------------------------------------------
+# POST /api/cart/items/
+# ---------------------------------------------------------------------------
+
+class CartItemAddView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CartItemCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        cart    = _get_or_create_cart(request.user)
+        variant = serializer.validated_data['variant']
+        product = serializer.validated_data['product']
+        qty     = serializer.validated_data['quantity']
+
+        existing = CartItem.objects.filter(cart=cart, variant=variant).first()
+        if existing:
+            existing.quantity = min(existing.quantity + qty, 10)
+            existing.save()
+        else:
+            CartItem.objects.create(
+                cart=cart, product=product, variant=variant, quantity=qty
+            )
+
+        return _cart_response(request.user, request)
+
+
+# ---------------------------------------------------------------------------
+# DELETE /api/cart/clear/
+# ---------------------------------------------------------------------------
+
+class CartItemDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, item_id):
+        try:
+            item = CartItem.objects.get(pk=item_id, cart__user=request.user)
+        except CartItem.DoesNotExist:
+            return Response({'error': 'Item not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CartItemUpdateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        item.quantity = serializer.validated_data['quantity']
+        item.save()
+        return _cart_response(request.user, request)
+
+    def delete(self, request, item_id):
+        try:
+            item = CartItem.objects.get(pk=item_id, cart__user=request.user)
+        except CartItem.DoesNotExist:
+            return Response({'error': 'Item not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        item.delete()
+        return _cart_response(request.user, request)
+    
+class CartClearView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        cart = _get_or_create_cart(request.user)
+        cart.items.all().delete()
+        return _cart_response(request.user, request)

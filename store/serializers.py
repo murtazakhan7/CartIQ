@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Subcategory, Product, ProductImage, ProductVariant, DeliveryOption
-
+from .models import Category, Subcategory, Product, ProductImage, ProductVariant, DeliveryOption, Cart, CartItem
 
 class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -92,3 +91,92 @@ class DeliveryOptionSerializer(serializers.ModelSerializer):
         model = DeliveryOption
         fields = ['id', 'country_code', 'country_name',
                   'estimated_days_min', 'estimated_days_max', 'flat_fee']
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product  = ProductListSerializer(read_only=True)
+    variant  = ProductVariantSerializer(read_only=True)
+    subtotal = serializers.SerializerMethodField()
+
+    class Meta:
+        model  = CartItem
+        fields = ['id', 'product', 'variant', 'quantity', 'subtotal']
+
+    def get_subtotal(self, obj):
+        return obj.subtotal
+
+
+class CartItemCreateSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    variant_id = serializers.IntegerField()
+    quantity   = serializers.IntegerField(default=1, min_value=1, max_value=10)
+
+    def validate(self, data):
+        try:
+            variant = ProductVariant.objects.select_related('product').get(
+                pk=data['variant_id']
+            )
+        except ProductVariant.DoesNotExist:
+            raise serializers.ValidationError('Variant not found.')
+
+        if variant.product_id != data['product_id']:
+            raise serializers.ValidationError(
+                'This size is not available for this product.'
+            )
+
+        if variant.stock_quantity == 0:
+            raise serializers.ValidationError(
+                'This size is currently out of stock.'
+            )
+
+        data['variant'] = variant
+        data['product'] = variant.product
+        return data
+
+
+class CartItemUpdateSerializer(serializers.Serializer):
+    quantity = serializers.IntegerField(min_value=1, max_value=10)
+
+
+class CartSerializer(serializers.ModelSerializer):
+    items                  = CartItemSerializer(many=True, read_only=True)
+    total_items            = serializers.SerializerMethodField()
+    subtotal               = serializers.SerializerMethodField()
+    delivery_fee           = serializers.SerializerMethodField()
+    estimated_arrival_date = serializers.SerializerMethodField()
+    delivery_country_name  = serializers.SerializerMethodField()
+    total                  = serializers.SerializerMethodField()
+
+    class Meta:
+        model  = Cart
+        fields = [
+            'id', 'items', 'total_items', 'subtotal',
+            'delivery_fee', 'estimated_arrival_date',
+            'delivery_country_name', 'total',
+        ]
+
+    def get_total_items(self, obj):
+        return obj.total_items
+
+    def get_subtotal(self, obj):
+        return sum(item.subtotal for item in obj.items.all())
+
+    def _get_delivery(self):
+        return self.context.get('delivery')
+
+    def get_delivery_fee(self, obj):
+        delivery = self._get_delivery()
+        return delivery['flat_fee'] if delivery else None
+
+    def get_estimated_arrival_date(self, obj):
+        delivery = self._get_delivery()
+        return delivery['estimated_arrival_date'] if delivery else None
+
+    def get_delivery_country_name(self, obj):
+        delivery = self._get_delivery()
+        return delivery['country_name'] if delivery else None
+
+    def get_total(self, obj):
+        delivery = self._get_delivery()
+        if delivery is None:
+            return None
+        return self.get_subtotal(obj) + delivery['flat_fee']

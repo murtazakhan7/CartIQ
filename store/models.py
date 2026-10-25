@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.conf import settings
 
 SIZE_CHOICES = [
     ('XS', 'XS'),
@@ -117,3 +117,49 @@ class DeliveryOption(models.Model):
 
     def __str__(self):
         return f'{self.country_name} ({self.country_code}) — {self.estimated_days_min}–{self.estimated_days_max} days'
+
+class Cart(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        related_name='cart',
+        on_delete=models.CASCADE,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'Cart of {self.user.email}'
+
+    @property
+    def total_items(self):
+        return sum(item.quantity for item in self.items.all())
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(
+        Cart,
+        related_name='items',
+        on_delete=models.CASCADE,
+    )
+    product = models.ForeignKey(
+        Product,
+        related_name='cart_items',
+        on_delete=models.CASCADE,
+    )
+    variant = models.ForeignKey(
+        ProductVariant,
+        related_name='cart_items',
+        on_delete=models.CASCADE,
+    )
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('cart', 'variant')
+
+    def __str__(self):
+        return f'{self.quantity}x {self.product.name} ({self.variant.size})'
+
+    @property
+    def subtotal(self):
+        return self.quantity * self.product.base_price
