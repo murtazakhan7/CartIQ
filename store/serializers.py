@@ -180,3 +180,11 @@ class CartSerializer(serializers.ModelSerializer):
         if delivery is None:
             return None
         return self.get_subtotal(obj) + delivery['flat_fee']
+
+class PromoCodeSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=50)
+
+    def validate_code(self, value):
+        if not value.strip():
+            raise serializers.ValidationError('Promo code cannot be empty.')
+        return value.strip().upper()

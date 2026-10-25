@@ -16,11 +16,21 @@ from .serializers import (
     ProductListSerializer,
     CartSerializer,
     CartItemCreateSerializer,
-    CartItemUpdateSerializer
+    CartItemUpdateSerializer,
+    PromoCodeSerializer,
+
 )
 
 
 # Helpers
+
+import hashlib
+
+def calculate_promo_discount(code):
+    hash_val = int(hashlib.md5(
+        code.strip().upper().encode()
+    ).hexdigest(), 16)
+    return (hash_val % 16) + 5  # always returns 5 to 20
 
 def _product_list_queryset():
     """Base queryset for product listings — avoids N+1 on all list views."""
@@ -339,3 +349,38 @@ class CartClearView(APIView):
         cart = _get_or_create_cart(request.user)
         cart.items.all().delete()
         return _cart_response(request.user, request)
+
+# ---------------------------------------------------------------------------
+# POST /api/promo/validate/
+# ---------------------------------------------------------------------------
+
+class PromoValidateView(APIView):
+
+    def post(self, request):
+        serializer = PromoCodeSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        code             = serializer.validated_data['code']
+        discount_percent = calculate_promo_discount(code)
+
+        discount_amount      = None
+        discounted_subtotal  = None
+
+        if request.user.is_authenticated:
+            try:
+                cart     = Cart.objects.prefetch_related('items__product').get(
+                    user=request.user
+                )
+                subtotal = sum(item.subtotal for item in cart.items.all())
+                discount_amount     = round(subtotal * discount_percent / 100, 2)
+                discounted_subtotal = round(subtotal - discount_amount, 2)
+            except Cart.DoesNotExist:
+                pass
+
+        return Response({
+            'code':                 code,
+            'discount_percent':     discount_percent,
+            'discount_amount':      discount_amount,
+            'discounted_subtotal':  discounted_subtotal,
+        })
