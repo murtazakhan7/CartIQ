@@ -1,6 +1,10 @@
 from rest_framework import serializers
-from .models import Category, Subcategory, Product, ProductImage, ProductVariant, DeliveryOption, Cart, CartItem
-
+from .models import (
+    Category, Subcategory, Product, 
+        ProductImage, ProductVariant, 
+        DeliveryOption, Cart, CartItem,
+        Order, OrderItem
+)
 class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcategory
@@ -188,3 +192,42 @@ class PromoCodeSerializer(serializers.Serializer):
         if not value.strip():
             raise serializers.ValidationError('Promo code cannot be empty.')
         return value.strip().upper()
+class OrderItemSerializer(serializers.ModelSerializer):
+    product  = ProductListSerializer(read_only=True)
+    variant  = ProductVariantSerializer(read_only=True)
+    subtotal = serializers.SerializerMethodField()
+
+    class Meta:
+        model  = OrderItem
+        fields = [
+            'id', 'product', 'variant',
+            'quantity', 'price_at_purchase', 'subtotal',
+        ]
+
+    def get_subtotal(self, obj):
+        return obj.subtotal
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items      = OrderItemSerializer(many=True, read_only=True)
+    created_at = serializers.SerializerMethodField()
+
+    class Meta:
+        model  = Order
+        fields = [
+            'id', 'status', 'subtotal', 'delivery_fee',
+            'discount_amount', 'discount_percent', 'promo_code',
+            'total_amount', 'delivery_country', 'delivery_province',
+            'delivery_city', 'delivery_address_line',
+            'delivery_postal_code', 'used_saved_address',
+            'items', 'created_at',
+        ]
+        read_only_fields = fields
+
+    def get_created_at(self, obj):
+        return obj.created_at.strftime('%d %b %Y, %I:%M %p')
+
+
+class OrderCreateSerializer(serializers.Serializer):
+    promo_code       = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    override_address = serializers.DictField(required=False)

@@ -10,6 +10,13 @@ SIZE_CHOICES = [
     ('XXL', 'XXL'),
 ]
 
+ORDER_STATUS_CHOICES = [
+    ('pending',   'Pending'),
+    ('confirmed', 'Confirmed'),
+    ('shipped',   'Shipped'),
+    ('delivered', 'Delivered'),
+]
+
 SIZE_ORDER = {'XS': 0, 'S': 1, 'M': 2, 'L': 3, 'XL': 4, 'XXL': 5}
 
 
@@ -163,3 +170,63 @@ class CartItem(models.Model):
     @property
     def subtotal(self):
         return self.quantity * self.product.base_price
+
+
+class Order(models.Model):
+    user                  = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='orders',
+        on_delete=models.CASCADE,
+    )
+    status                = models.CharField(
+        max_length=20,
+        choices=ORDER_STATUS_CHOICES,
+        default='pending',
+    )
+    subtotal              = models.DecimalField(max_digits=10, decimal_places=2)
+    delivery_fee          = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_amount       = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_amount          = models.DecimalField(max_digits=10, decimal_places=2)
+    promo_code            = models.CharField(max_length=50, blank=True)
+    discount_percent      = models.IntegerField(default=0)
+    delivery_country      = models.CharField(max_length=100)
+    delivery_province     = models.CharField(max_length=100, blank=True)
+    delivery_city         = models.CharField(max_length=100, blank=True)
+    delivery_address_line = models.CharField(max_length=255, blank=True)
+    delivery_postal_code  = models.CharField(max_length=20, blank=True)
+    used_saved_address    = models.BooleanField(default=True)
+    created_at            = models.DateTimeField(auto_now_add=True)
+    updated_at            = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Order #{self.id} by {self.user.email} — {self.status}'
+
+
+class OrderItem(models.Model):
+    order               = models.ForeignKey(
+        Order,
+        related_name='items',
+        on_delete=models.CASCADE,
+    )
+    product             = models.ForeignKey(
+        Product,
+        related_name='order_items',
+        on_delete=models.CASCADE,
+    )
+    variant             = models.ForeignKey(
+        ProductVariant,
+        related_name='order_items',
+        on_delete=models.CASCADE,
+    )
+    quantity            = models.PositiveIntegerField()
+    price_at_purchase   = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.quantity}x {self.product.name} ({self.variant.size})'
+
+    @property
+    def subtotal(self):
+        return self.quantity * self.price_at_purchase
