@@ -202,3 +202,122 @@ No tests were written within the time limit.
 2. **CategoryListView returning paginated response.** `PAGE_SIZE = 12` is set globally in DRF settings, so `CategoryListView` returned `{count, next, previous, results}` instead of a plain array. The frontend dropdown was receiving an object and rendering nothing. Fixed by adding `pagination_class = None` to `CategoryListView`.
 
 3. **Search not clearing on category/subcategory change.** Selecting a category filter left the previous search term in the input and in the URL, causing a combined filter the user didn't intend. Fixed by resetting `searchInput` state and clearing the `search` param from the URL inside `handleCategoryChange` and `handleSubcategoryChange`.
+```
+laam-assessment
+├─ core
+│  ├─ asgi.py
+│  ├─ settings.py
+│  ├─ urls.py
+│  ├─ wsgi.py
+│  └─ __init__.py
+├─ frontend
+│  ├─ eslint.config.js
+│  ├─ index.html
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ public
+│  │  ├─ favicon.svg
+│  │  └─ icons.svg
+│  ├─ README.md
+│  ├─ src
+│  │  ├─ api.js
+│  │  ├─ App.css
+│  │  ├─ App.jsx
+│  │  ├─ assets
+│  │  │  ├─ hero.png
+│  │  │  ├─ react.svg
+│  │  │  └─ vite.svg
+│  │  ├─ index.css
+│  │  ├─ main.jsx
+│  │  └─ pages
+│  │     ├─ ProductDetailPage.jsx
+│  │     └─ ProductListPage.jsx
+│  └─ vite.config.js
+├─ manage.py
+├─ media
+│  ├─ kids
+│  │  ├─ boys1.webp
+│  │  ├─ boys2.webp
+│  │  ├─ boys3.webp
+│  │  ├─ boys4.webp
+│  │  ├─ boys5.webp
+│  │  ├─ boys6.webp
+│  │  ├─ boys7.webp
+│  │  ├─ boys8.webp
+│  │  ├─ girls1.webp
+│  │  ├─ girls2.webp
+│  │  ├─ girls3.webp
+│  │  ├─ girls4.webp
+│  │  ├─ girls5.webp
+│  │  ├─ girls6.webp
+│  │  ├─ girls7.webp
+│  │  └─ girls8.webp
+│  ├─ men
+│  │  ├─ shalwar1.webp
+│  │  ├─ shalwar2.webp
+│  │  ├─ shalwar3.webp
+│  │  ├─ shalwar4.webp
+│  │  ├─ shalwar5.webp
+│  │  ├─ shalwar6.webp
+│  │  ├─ shalwar7.webp
+│  │  ├─ shalwar8.webp
+│  │  ├─ shirt1.webp
+│  │  ├─ shirt2.webp
+│  │  ├─ shirt3.webp
+│  │  ├─ shirt4.webp
+│  │  ├─ shirt5.webp
+│  │  ├─ shirt6.webp
+│  │  ├─ shirt7.webp
+│  │  └─ shirt8.webp
+│  ├─ unstitched
+│  │  ├─ unstitched1.webp
+│  │  ├─ unstitched2.webp
+│  │  ├─ unstitched3.webp
+│  │  ├─ unstitched4.webp
+│  │  ├─ unstitched5.webp
+│  │  ├─ unstitched6.webp
+│  │  ├─ unstitched7.webp
+│  │  └─ unstitched8.webp
+│  └─ women
+│     ├─ dress1.webp
+│     ├─ dress2.webp
+│     ├─ dress3.webp
+│     ├─ dress4.webp
+│     ├─ dress5.webp
+│     ├─ dress6.webp
+│     ├─ dress7.webp
+│     ├─ dress8.webp
+│     ├─ kurta1.webp
+│     ├─ kurta2.webp
+│     ├─ kurta3.webp
+│     ├─ kurta4.webp
+│     ├─ kurta5.webp
+│     ├─ kurta6.webp
+│     ├─ kurta7.webp
+│     ├─ kurta8.webp
+│     ├─ lawn1.webp
+│     ├─ lawn2.webp
+│     ├─ lawn3.webp
+│     ├─ lawn4.webp
+│     ├─ lawn5.webp
+│     ├─ lawn6.webp
+│     ├─ lawn7.webp
+│     └─ lawn8.webp
+├─ package-lock.json
+├─ README.md
+├─ requirements.txt
+├─ seed.py
+└─ store
+   ├─ admin.py
+   ├─ apps.py
+   ├─ migrations
+   │  ├─ 0001_initial.py
+   │  └─ __init__.py
+   ├─ models.py
+   ├─ serializers.py
+   ├─ tests.py
+   ├─ urls.py
+   ├─ views.py
+   └─ __init__.py
+
+```
