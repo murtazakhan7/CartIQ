@@ -11,7 +11,7 @@ from .views import (
     CartItemDetailView,
     CartClearView,
     PromoValidateView,
-    OrderView,
+    OrderView, 
     OrderDetailView,
     WishlistView,
     WishlistRemoveView,

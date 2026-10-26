@@ -48,6 +48,13 @@ SIMPLE_JWT = {
 }
 
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
+
 
 # Application definition
 
@@ -91,6 +98,18 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon':     '100/hour',
+        'user':     '1000/day',
+        'login':    '10/hour',
+        'register': '20/hour',
+        'cart':     '200/hour',
+        'orders':   '50/hour',
+    },
 }
 
 ROOT_URLCONF = 'core.urls'

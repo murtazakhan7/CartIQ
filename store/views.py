@@ -23,7 +23,7 @@ from .serializers import (
     OrderCreateSerializer,
     WishlistSerializer,
 )
-
+from .throttles import CartThrottle, OrderThrottle
 
 # Helpers
 
@@ -307,6 +307,7 @@ def _cart_response(user, request):
 
 class CartView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes   = [CartThrottle]
 
     def get(self, request):
         return _cart_response(request.user, request)
@@ -318,6 +319,7 @@ class CartView(APIView):
 
 class CartItemAddView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes   = [CartThrottle]
 
     def post(self, request):
         serializer = CartItemCreateSerializer(data=request.data)
@@ -347,6 +349,7 @@ class CartItemAddView(APIView):
 
 class CartItemDetailView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes   = [CartThrottle]
 
     def patch(self, request, item_id):
         try:
@@ -373,7 +376,7 @@ class CartItemDetailView(APIView):
     
 class CartClearView(APIView):
     permission_classes = [IsAuthenticated]
-
+    throttle_classes   = [CartThrottle]
     def delete(self, request):
         cart = _get_or_create_cart(request.user)
         cart.items.all().delete()
@@ -420,6 +423,7 @@ class PromoValidateView(APIView):
 
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes   = [OrderThrottle]
 
     def get(self, request):
         orders = _prefetch_orders(Order.objects.filter(user=request.user))
@@ -509,6 +513,7 @@ class OrderView(APIView):
 
 class OrderDetailView(APIView):
     permission_classes = [IsAuthenticated]
+    throttle_classes = [OrderThrottle]
 
     def get(self, request, order_id):
         try:

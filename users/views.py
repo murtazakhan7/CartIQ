@@ -12,7 +12,7 @@ from .serializers import (
     UserProfileSerializer,
     ChangePasswordSerializer,
 )
-
+from store.throttles import LoginThrottle, RegisterThrottle
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -23,6 +23,7 @@ def get_tokens_for_user(user):
 
 
 class RegisterView(APIView):
+    throttle_classes = [RegisterThrottle]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -41,6 +42,7 @@ class RegisterView(APIView):
 
 
 class LoginView(APIView):
+    throttle_classes = [LoginThrottle]
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
