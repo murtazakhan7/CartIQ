@@ -13,6 +13,9 @@ from .views import (
     PromoValidateView,
     OrderView,
     OrderDetailView,
+    WishlistView,
+    WishlistRemoveView,
+    WishlistCheckView,
 
 )
 
@@ -29,4 +32,7 @@ urlpatterns = [
     path('api/cart/items/<int:item_id>/', CartItemDetailView.as_view(), name='cart-item-detail'),
     path('api/orders/',                OrderView.as_view(),       name='orders'),
     path('api/orders/<int:order_id>/', OrderDetailView.as_view(), name='order-detail'),
+    path('api/wishlist/',               WishlistView.as_view(),       name='wishlist'),
+    path('api/wishlist/check/',         WishlistCheckView.as_view(),  name='wishlist-check'),
+    path('api/wishlist/<int:item_id>/', WishlistRemoveView.as_view(), name='wishlist-remove'),
 ]

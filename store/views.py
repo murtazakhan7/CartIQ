@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
 
 
-from .models import Category, DeliveryOption, Product, Cart, CartItem, Order, OrderItem
+from .models import Category, DeliveryOption, Product, Cart, CartItem, Order, OrderItem, Wishlist
 from .serializers import (
     CategorySerializer,
     DeliveryOptionSerializer,
@@ -21,6 +21,7 @@ from .serializers import (
     PromoCodeSerializer,
     OrderSerializer,
     OrderCreateSerializer,
+    WishlistSerializer,
 )
 
 
@@ -522,3 +523,111 @@ class OrderDetailView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
         return Response(OrderSerializer(order).data)
+
+class WishlistView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        items = (
+            Wishlist.objects
+            .filter(user=request.user)
+            .select_related('product__category', 'product__subcategory')
+            .prefetch_related('product__images', 'product__variants')
+        )
+        serializer = WishlistSerializer(items, many=True)
+        return Response({
+            'count': items.count(),
+            'items': serializer.data,
+        })
+
+    def post(self, request):
+        product_id = request.data.get('product_id')
+        if not product_id:
+            return Response(
+                {'error': 'product_id is required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            product = Product.objects.get(pk=product_id)
+        except Product.DoesNotExist:
+            return Response(
+                {'error': 'Product not found.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if Wishlist.objects.filter(user=request.user, product=product).exists():
+            return Response(
+                {'error': 'Product already in wishlist'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        item = Wishlist.objects.create(user=request.user, product=product)
+        item_qs = (
+            Wishlist.objects
+            .select_related('product__category', 'product__subcategory')
+            .prefetch_related('product__images', 'product__variants')
+            .get(pk=item.pk)
+        )
+        return Response(
+            {
+                'message': 'Added to wishlist',
+                'item':    WishlistSerializer(item_qs).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+# ---------------------------------------------------------------------------
+# DELETE /api/wishlist/{item_id}/
+# ---------------------------------------------------------------------------
+
+class WishlistRemoveView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, item_id):
+        try:
+            item = Wishlist.objects.get(pk=item_id, user=request.user)
+        except Wishlist.DoesNotExist:
+            return Response(
+                {'error': 'Wishlist item not found.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        item.delete()
+        return Response(
+            {'message': 'Removed from wishlist'},
+            status=status.HTTP_200_OK,
+        )
+
+
+# ---------------------------------------------------------------------------
+# GET /api/wishlist/check/?product_id=1
+# ---------------------------------------------------------------------------
+
+class WishlistCheckView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        product_id = request.query_params.get('product_id')
+        if not product_id:
+            return Response(
+                {'error': 'product_id query param is required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            item = Wishlist.objects.get(
+                user=request.user,
+                product_id=product_id,
+            )
+            return Response({
+                'product_id':      int(product_id),
+                'in_wishlist':     True,
+                'wishlist_item_id': item.pk,
+            })
+        except Wishlist.DoesNotExist:
+            return Response({
+                'product_id':      int(product_id),
+                'in_wishlist':     False,
+                'wishlist_item_id': None,
+            })

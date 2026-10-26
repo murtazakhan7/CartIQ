@@ -3,7 +3,7 @@ from .models import (
     Category, Subcategory, Product, 
         ProductImage, ProductVariant, 
         DeliveryOption, Cart, CartItem,
-        Order, OrderItem
+        Order, OrderItem, Wishlist, 
 )
 class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -231,3 +231,11 @@ class OrderSerializer(serializers.ModelSerializer):
 class OrderCreateSerializer(serializers.Serializer):
     promo_code       = serializers.CharField(max_length=50, required=False, allow_blank=True)
     override_address = serializers.DictField(required=False)
+
+class WishlistSerializer(serializers.ModelSerializer):
+    product = ProductListSerializer(read_only=True)
+
+    class Meta:
+        model  = Wishlist
+        fields = ['id', 'product', 'added_at']
+        read_only_fields = fields
