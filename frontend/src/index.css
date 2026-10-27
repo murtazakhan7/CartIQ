@@ -1249,3 +1249,294 @@ a {
     position: static;
   }
 }
+/* ============================================================
+   Orders List
+   ============================================================ */
+.orders-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.orders-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 24px;
+}
+
+.order-card {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  padding: 20px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.order-number {
+  font-weight: 600;
+  font-size: 15px;
+  color: #111111;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+}
+
+.status-badge--pending {
+  background: #f0f0f0;
+  color: #666666;
+}
+
+.status-badge--confirmed {
+  background: #e8f0fe;
+  color: #1a56db;
+}
+
+.status-badge--shipped {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge--delivered {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.order-meta {
+  font-size: 13px;
+  color: #888888;
+  margin-bottom: 6px;
+}
+
+.order-total {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111111;
+  margin-top: 8px;
+}
+
+.view-details-btn {
+  font-size: 12px;
+  color: #111111;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 10px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ============================================================
+   Order Detail
+   ============================================================ */
+.order-detail-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.back-link {
+  display: block;
+  font-size: 13px;
+  color: #666666;
+  margin-bottom: 24px;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.back-link:hover {
+  color: #111111;
+}
+
+.order-detail-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.order-items-section {
+  min-width: 0;
+}
+
+.order-summary-section {
+  min-width: 0;
+}
+
+.order-item {
+  display: flex;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.order-item-image {
+  width: 80px;
+  height: 100px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+  .order-detail-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .order-detail-page,
+  .orders-page {
+    padding: 20px 16px;
+  }
+}
+
+/* ============================================================
+   Wishlist
+   ============================================================ */
+.wishlist-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.wishlist-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 24px;
+}
+
+.wishlist-count {
+  font-size: 14px;
+  color: #888888;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+.wishlist-card {
+  position: relative;
+}
+
+.wishlist-heart-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #cc0000;
+  z-index: 1;
+  transition: transform 0.15s;
+}
+
+.wishlist-heart-btn:hover {
+  transform: scale(1.15);
+}
+
+@media (max-width: 768px) {
+  .wishlist-page {
+    padding: 20px 16px;
+  }
+}
+
+/* ============================================================
+   Profile
+   ============================================================ */
+.profile-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.profile-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 32px;
+}
+
+.profile-section {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.profile-section-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #111111;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.profile-info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 6px 0;
+  color: #666666;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.change-password-toggle {
+  font-size: 13px;
+  color: #111111;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.change-password-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #eeeeee;
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 20px 16px;
+  }
+}

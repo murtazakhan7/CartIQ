@@ -5,6 +5,11 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import LoginPage         from './pages/LoginPage';
 import RegisterPage      from './pages/RegisterPage';
 import CartPage from './pages/CartPage';
+import OrdersPage      from './pages/OrdersPage';
+import OrderDetailPage from './pages/OrderDetailPage';
+import WishlistPage    from './pages/WishlistPage';
+import ProfilePage     from './pages/ProfilePage';
+
 
 
 function ProtectedRoute({ children }) {
@@ -41,26 +46,18 @@ function AppRoutes() {
     <CartPage />
   </ProtectedRoute>
   } />
-      <Route path="/orders" element={
-        <ProtectedRoute>
-          <div style={{ padding: '2rem' }}>Orders coming soon</div>
-        </ProtectedRoute>
-      } />
-      <Route path="/orders/:id" element={
-        <ProtectedRoute>
-          <div style={{ padding: '2rem' }}>Order detail coming soon</div>
-        </ProtectedRoute>
-      } />
-      <Route path="/wishlist" element={
-        <ProtectedRoute>
-          <div style={{ padding: '2rem' }}>Wishlist coming soon</div>
-        </ProtectedRoute>
-      } />
-      <Route path="/profile" element={
-        <ProtectedRoute>
-          <div style={{ padding: '2rem' }}>Profile coming soon</div>
-        </ProtectedRoute>
-      } />
+     <Route path="/orders" element={
+  <ProtectedRoute><OrdersPage /></ProtectedRoute>
+} />
+<Route path="/orders/:id" element={
+  <ProtectedRoute><OrderDetailPage /></ProtectedRoute>
+} />
+<Route path="/wishlist" element={
+  <ProtectedRoute><WishlistPage /></ProtectedRoute>
+} />
+<Route path="/profile" element={
+  <ProtectedRoute><ProfilePage /></ProtectedRoute>
+} />
     </Routes>
   );
 }
