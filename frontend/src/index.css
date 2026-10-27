@@ -397,6 +397,7 @@ a {
 }
 
 .pdp-main-image-wrapper {
+  position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
   overflow: hidden;
