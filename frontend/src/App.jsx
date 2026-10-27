@@ -4,6 +4,8 @@ import ProductListPage   from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import LoginPage         from './pages/LoginPage';
 import RegisterPage      from './pages/RegisterPage';
+import CartPage from './pages/CartPage';
+
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -34,12 +36,11 @@ function AppRoutes() {
       <Route path="/login"       element={<LoginPage />} />
       <Route path="/register"    element={<RegisterPage />} />
 
-      {/* Protected routes — placeholders for now */}
       <Route path="/cart" element={
-        <ProtectedRoute>
-          <div style={{ padding: '2rem' }}>Cart coming soon</div>
-        </ProtectedRoute>
-      } />
+  <ProtectedRoute>
+    <CartPage />
+  </ProtectedRoute>
+  } />
       <Route path="/orders" element={
         <ProtectedRoute>
           <div style={{ padding: '2rem' }}>Orders coming soon</div>

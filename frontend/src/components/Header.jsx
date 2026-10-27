@@ -2,13 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../authContext';
 
-export default function Header({ searchSlot, cartCount = 0 }) {
-  const { isAuthenticated, user, logout } = useAuth();
+export default function Header({ searchSlot }) {
+  const { isAuthenticated, user, logout, cartCount } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate    = useNavigate();
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -25,7 +24,6 @@ export default function Header({ searchSlot, cartCount = 0 }) {
     <header className="site-header">
       <Link to="/" className="site-logo">LAAM</Link>
 
-      {/* Search slot — only rendered when passed */}
       {searchSlot && (
         <div className="search-wrapper">{searchSlot}</div>
       )}
@@ -38,7 +36,6 @@ export default function Header({ searchSlot, cartCount = 0 }) {
           </>
         ) : (
           <>
-            {/* Wishlist */}
             <span
               className="wishlist-icon"
               onClick={() => navigate('/wishlist')}
@@ -47,7 +44,6 @@ export default function Header({ searchSlot, cartCount = 0 }) {
               ♡
             </span>
 
-            {/* Cart */}
             <span
               className="cart-icon-wrapper"
               onClick={() => navigate('/cart')}
@@ -59,7 +55,6 @@ export default function Header({ searchSlot, cartCount = 0 }) {
               )}
             </span>
 
-            {/* User dropdown */}
             <div className="user-dropdown-wrapper" ref={dropdownRef}>
               <span
                 style={{ cursor: 'pointer', fontSize: '13px' }}
@@ -70,16 +65,10 @@ export default function Header({ searchSlot, cartCount = 0 }) {
 
               {dropdownOpen && (
                 <div className="user-dropdown">
-                  <Link
-                    to="/profile"
-                    onClick={() => setDropdownOpen(false)}
-                  >
+                  <Link to="/profile" onClick={() => setDropdownOpen(false)}>
                     My Profile
                   </Link>
-                  <Link
-                    to="/orders"
-                    onClick={() => setDropdownOpen(false)}
-                  >
+                  <Link to="/orders" onClick={() => setDropdownOpen(false)}>
                     My Orders
                   </Link>
                   <button onClick={() => { setDropdownOpen(false); logout(); }}>
