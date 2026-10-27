@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getCategories, getProducts } from '../api';
 
+import Header from '../components/Header';
+
+
 const PAGE_SIZE = 12;
 
 export default function ProductListPage() {
@@ -160,19 +163,19 @@ export default function ProductListPage() {
   return (
     <div className="page-wrapper">
       {/* ---- Header ---- */}
-      <header className="site-header">
-        <a href="/" className="site-logo">LAAM</a>
-        <div className="search-wrapper">
-          <input
-            className="search-input"
-            type="text"
-            placeholder="Search products..."
-            value={searchInput}
-            onChange={handleSearchChange}
-            onKeyDown={handleSearchKeyDown}
-          />
-        </div>
-      </header>
+     <Header
+  searchSlot={
+    <input
+      className="search-input"
+      type="text"
+      placeholder="Search products..."
+      value={searchInput}
+      onChange={handleSearchChange}
+      onKeyDown={handleSearchKeyDown}
+    />
+  }
+  cartCount={0}
+/>
 
       {/* ---- Filter Row ---- */}
       <div className="filter-row">

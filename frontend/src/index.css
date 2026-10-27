@@ -801,3 +801,217 @@ a {
     padding: 32px 16px;
   }
 }
+/* ============================================================
+   Auth Pages
+   ============================================================ */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  padding: 24px;
+}
+
+.auth-card {
+  background: #ffffff;
+  padding: 40px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.auth-logo {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #111111;
+  text-align: center;
+  margin-bottom: 32px;
+  text-decoration: none;
+}
+
+.auth-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 24px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #666666;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #dddddd;
+  background: #fafafa;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #333333;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #111111;
+  background: #ffffff;
+}
+
+.form-input--error {
+  border-color: #cc0000;
+}
+
+.form-error {
+  font-size: 12px;
+  color: #cc0000;
+  margin-top: 2px;
+}
+
+.auth-link {
+  font-size: 13px;
+  color: #666666;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.auth-link a {
+  color: #111111;
+  text-decoration: underline;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper .form-input {
+  padding-right: 56px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666666;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  padding: 0;
+}
+
+/* ============================================================
+   Header nav
+   ============================================================ */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-nav a {
+  font-size: 13px;
+  color: #333333;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.header-nav a:hover {
+  color: #111111;
+}
+
+.cart-icon-wrapper {
+  position: relative;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #111111;
+  color: #ffffff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.wishlist-icon {
+  cursor: pointer;
+  color: #333333;
+  font-size: 20px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.wishlist-icon:hover {
+  color: #111111;
+}
+
+.user-dropdown-wrapper {
+  position: relative;
+}
+
+.user-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  min-width: 160px;
+  z-index: 200;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.user-dropdown a,
+.user-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #333333;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background 0.15s;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover {
+  background: #f5f5f5;
+}

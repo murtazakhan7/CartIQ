@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductDetail, getSimilarProducts, getDelivery } from '../api';
+import Header from '../components/Header';
+
 
 const COUNTRIES = [
   { code: 'PK', name: 'Pakistan' },
@@ -159,9 +161,9 @@ export default function ProductDetailPage() {
   return (
     <div className="page-wrapper">
       {/* ---- Minimal header ---- */}
-      <header className="site-header">
-        <a href="/" className="site-logo">LAAM</a>
-      </header>
+     <Header cartCount={0} />
+        {/* <a href="/" className="site-logo">CarIQ</a> */}
+    
 
       {/* ---- PDP body ---- */}
       <div className="pdp-container">
